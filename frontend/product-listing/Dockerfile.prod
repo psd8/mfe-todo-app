@@ -1,0 +1,38 @@
+# pull official base image
+FROM node:20  as builder
+
+
+# set working directory
+WORKDIR /product-listing
+
+# add `/product-listing/node_modules/.bin` to $PATH
+ENV PATH /product-listing/node_modules/.bin:$PATH
+
+# install product-listing dependencies
+COPY package.json ./
+COPY yarn.lock ./
+RUN yarn install
+
+
+# add product-listing
+COPY . ./
+
+# start product-listing
+RUN ["yarn", "build"]
+
+FROM nginx:alpine
+
+#!/bin/sh
+COPY ./.nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./.nginx/nginx.conf /etc/nginx/nginx.conf
+
+
+## Remove default nginx index page
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy from builder
+COPY --from=builder /product-listing/dist /usr/share/nginx/html
+
+EXPOSE 8082
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

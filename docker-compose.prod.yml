@@ -1,0 +1,26 @@
+version: "1.0"
+services:
+  dragndrop-prod:
+    build:
+      context: ./frontend/components/dnd-component
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8083:80"
+    container_name: dragndrop-prod
+  product-listing-prod:
+    build:
+      context: ./frontend/product-listing
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8082:80"
+      - "80:80"
+    container_name: product-listing-prod
+    depends_on:
+      - dragndrop-prod
+
+  # backend:
+  #   build:
+  #     context: './backend'
+  #   ports:
+  #     - "3003:3003"
+  #   container_name: frenchie-store-backend
