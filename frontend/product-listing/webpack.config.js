@@ -2,6 +2,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 const webpack = require("webpack");
+const path = require("path");
+const packageJson = require(path.resolve(__dirname, "package.json"));
 
 module.exports = {
   mode: "development",
@@ -53,6 +55,10 @@ module.exports = {
         test: /\.svg$/,
         use: "file-loader",
       },
+      {
+        test: /\.json$/,
+        type: "json", // Built-in support, no need for 'json-loader'
+      },
     ],
   },
 
@@ -62,7 +68,28 @@ module.exports = {
       remotes: {
         DndComponent: "DndComponent@http://localhost:8083/remoteEntry.js",
       },
-      shared: { react: { singleton: true }, "react-dom": { singleton: true } },
+      shared: {
+        react: {
+          singleton: true,
+          requiredVersion: packageJson.dependencies.react,
+        },
+        "react-dom": {
+          singleton: true,
+          requiredVersion: packageJson.dependencies.react,
+        },
+        "@emotion/react": {
+          singleton: true,
+          requiredVersion: packageJson.dependencies.react,
+        },
+        "@emotion/styled": {
+          singleton: true,
+          requiredVersion: packageJson.dependencies.react,
+        },
+        "@mui/material": {
+          singleton: true,
+          requiredVersion: packageJson.dependencies.react,
+        },
+      },
     }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",

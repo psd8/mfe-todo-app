@@ -2,6 +2,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 const webpack = require("webpack");
+const path = require("path");
+const packageJson = require(path.resolve(__dirname, "package.json"));
 
 module.exports = {
   mode: "development",
@@ -59,9 +61,30 @@ module.exports = {
       name: "DndComponent",
       filename: "remoteEntry.js",
       exposes: {
-        ".": "./src/App",
+        "./Grid": "./src/DndComponent",
       },
-      shared: { react: { singleton: true }, "react-dom": { singleton: true } },
+      shared: {
+        react: {
+          singleton: true,
+          requiredVersion: packageJson.dependencies.react,
+        },
+        "react-dom": {
+          singleton: true,
+          requiredVersion: packageJson.dependencies.react,
+        },
+        "@emotion/react": {
+          singleton: true,
+          requiredVersion: packageJson.dependencies.react,
+        },
+        "@emotion/styled": {
+          singleton: true,
+          requiredVersion: packageJson.dependencies.react,
+        },
+        "@mui/material": {
+          singleton: true,
+          requiredVersion: packageJson.dependencies.react,
+        },
+      },
     }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",

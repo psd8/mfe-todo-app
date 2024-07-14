@@ -1,19 +1,105 @@
-import React from "react";
-import logo from "./logo.svg";
+import React, { Suspense, useCallback, useState } from "react";
 import "./App.css";
+import { ICommonComponent } from "./interface";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Dialog,
+  DialogContent,
+  Grid,
+  IconButton,
+  Skeleton,
+  Typography,
+} from "@mui/material";
+import Data from "./data.json";
 
-const DndComponent = React.lazy(() => import("DndComponent"));
+const DndComponent = React.lazy(() => import("DndComponent/Grid"));
 function App() {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
+  const handleClickOpen = (url: string) => {
+    setImageUrl(url);
+  };
+
+  const handleClose = () => {
+    setImageUrl("");
+  };
+
+  const WithSortableItemContainer = useCallback(
+    ({ children }: ICommonComponent) => (
+      <Grid item md={4}>
+        {children}
+      </Grid>
+    ),
+    []
+  );
+  const RenderListItem = useCallback(
+    ({ item }) => (
+      <Card onClick={() => handleClickOpen(item.thumbnail)}>
+        {!imageLoaded && (
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            height={140}
+            animation="wave"
+          />
+        )}
+        <CardMedia
+          component="img"
+          height="140"
+          image={item.thumbnail}
+          alt={item.name}
+          onLoad={handleImageLoad}
+          style={{ display: imageLoaded ? "block" : "none" }}
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            {item.title}
+          </Typography>
+        </CardContent>
+      </Card>
+    ),
+    [imageLoaded]
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-          <DndComponent />
-        </p>
-      </header>
-    </div>
+    <Suspense fallback={"loading"}>
+      <div className="App">
+        <body>
+          <main>
+            <Grid
+              container
+              alignItems={"center"}
+              justifyContent={"center"}
+              spacing={2}
+            >
+              <DndComponent
+                WithSortableItemContainer={WithSortableItemContainer}
+                items={Data}
+                RenderListItem={RenderListItem}
+                onDragEnd={(items) => console.log(items)}
+                onClick={handleClickOpen}
+              />
+            </Grid>
+            <Dialog
+              open={!!imageUrl}
+              onClose={handleClose}
+              maxWidth="md"
+              fullWidth
+            >
+              <DialogContent>
+                <img src={imageUrl} style={{ width: "100%", height: "auto" }} />
+              </DialogContent>
+            </Dialog>
+          </main>
+        </body>
+      </div>
+    </Suspense>
   );
 }
 
