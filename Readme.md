@@ -94,13 +94,3 @@ Here is the status of all 5 points mentioned in the PDF:
      ```
 
      **Note**: Ensure all remote apps consumed by the host app are up and running. Check the `webpack.config` Module Federation configuration for details on which apps need to be running.
-
----
-
-### Adjustments Made:
-
-- Clarified the status of each project part.
-- Improved section headings for readability.
-- Emphasized key points and added notes for clarity.
-
-This should enhance the readability and usability of your README.md file. Adjust as necessary based on specific project details or additional requirements!
