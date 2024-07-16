@@ -1,43 +1,5 @@
 version: "3.8"
 services:
-  dragndrop:
-    build:
-      context: ./frontend/components/dnd-component
-      dockerfile: Dockerfile
-      target: development
-    restart: always
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true # create-ui-app >= 5.x
-      - FAST_REFRESH=false
-      - WDS_SOCKET_PORT= 8083
-    volumes:
-      - /dnd/node_modules
-      - ./frontend/components/dnd-component:/dnd
-    ports:
-      - "8083:8083"
-    container_name: dragndrop
-  product-listing:
-    build:
-      context: ./frontend/product-listing
-      dockerfile: Dockerfile
-      target: development
-    restart: always
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true # create-ui-app >= 5.x
-      - FAST_REFRESH=false
-      - WDS_SOCKET_PORT= 8082
-    volumes:
-      - /product-listing/node_modules
-      - ./frontend/product-listing:/product-listing
-    ports:
-      - "8082:8082"
-    container_name: product-listing
-    depends_on:
-      - dragndrop
-      - api
-
   postgres:
     image: postgres:latest
     restart: always
@@ -67,7 +29,7 @@ services:
     networks:
       - dem
 
-  api:
+  app:
     restart: unless-stopped
     build:
       context: ./backend

@@ -9,7 +9,7 @@ import {
   DragEndEvent,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
+  arraySwap,
   rectSwappingStrategy,
   SortableContext,
   sortableKeyboardCoordinates,
@@ -69,13 +69,12 @@ const DndComponent = ({
   // @onDragEnd callback
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-
     if (active.id !== over?.id && active?.id && over?.id) {
       setItems((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-        onDragEnd(arrayMove(items, oldIndex, newIndex));
-        return arrayMove(items, oldIndex, newIndex);
+        const oldIndex = items.findIndex((item) => item.position === active.id);
+        const newIndex = items.findIndex((item) => item.position === over.id);
+        onDragEnd(arraySwap(items, oldIndex, newIndex));
+        return arraySwap(items, oldIndex, newIndex);
       });
     }
   }

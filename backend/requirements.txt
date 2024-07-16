@@ -1,0 +1,6 @@
+starlette
+databases[postgresql]
+sqlalchemy
+asyncpg
+psycopg2-binary
+faker

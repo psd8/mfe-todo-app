@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useState } from "react";
 import "./App.css";
 import { ICommonComponent } from "./interface";
 import {
@@ -13,11 +13,13 @@ import {
   Typography,
 } from "@mui/material";
 import Data from "./data.json";
+import useFetch from "./hooks";
 
 const DndComponent = React.lazy(() => import("DndComponent/Grid"));
 function App() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const { data, isLoading } = useFetch("http://localhost:9999/data");
   const handleImageLoad = () => {
     setImageLoaded(true);
   };
@@ -78,13 +80,15 @@ function App() {
               justifyContent={"center"}
               spacing={2}
             >
-              <DndComponent
-                WithSortableItemContainer={WithSortableItemContainer}
-                items={Data}
-                RenderListItem={RenderListItem}
-                onDragEnd={(items) => console.log(items)}
-                onClick={handleClickOpen}
-              />
+              {!isLoading && (
+                <DndComponent
+                  WithSortableItemContainer={WithSortableItemContainer}
+                  items={data}
+                  RenderListItem={RenderListItem}
+                  onDragEnd={(items) => console.log(items)}
+                  onClick={handleClickOpen}
+                />
+              )}
             </Grid>
             <Dialog
               open={!!imageUrl}
