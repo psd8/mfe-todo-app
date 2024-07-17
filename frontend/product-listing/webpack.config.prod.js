@@ -113,9 +113,9 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env": JSON.stringify(process.env),
     }),
-    // new WebpackObfuscator(
-    //   { rotateStringArray: true, reservedStrings: ["s*"] },
-    //   []
-    // ),
+    new WebpackObfuscator(
+      { rotateStringArray: true, reservedStrings: ["s*"] },
+      []
+    ),
   ],
 };

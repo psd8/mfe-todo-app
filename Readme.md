@@ -1,43 +1,72 @@
-Your README.md content looks comprehensive and well-structured. Here are a few minor adjustments and improvements for clarity and completeness:
+Here's a beautified version of your `README.md` content with added clarity and structure:
 
 ---
 
 # Sticky Todo List With Re-arranging Feature
 
-Here is the status of all 5 points mentioned in the PDF:
+## Running the Application
 
-1. **Part1: Frontend**
+You can run the whole app with microservices and frontend using Docker Compose.
 
-   - Initial implementation done.
-   - Improvisation needed folder structure for each MFE app.
+### Development Environment
+
+```sh
+docker-compose up -d
+```
+
+### Production Environment
+
+```sh
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### Running Starlette Microservices App
+
+```sh
+docker-compose -f docker-compose.services.yml up -d
+```
+
+## Endpoints to Check Apps
+
+- **Microservices:** `http://localhost:9999/data` (GET|POST)
+- **Product-Listing (host-app-container):** `http://localhost:8082`
+- **Individual Containers for Components:**
+  1. **DragNDrop:** `http://localhost:8083`
+  2. **AutoSave:** `http://localhost:8084`
+
+## Status of Key Points
+
+1. **Part 1: Frontend** - Done
+
    - Setup and wrote test cases.
-   - Configured pre-commit hooks.
+   - More TypeScript definitions can be added.
 
-2. **Part2: Making Api Call**
+2. **Part 2: Making API Call** - Done
 
-   - Backend API creation (Not started yet).
-   - Json server - started on this, but currently using static JSON file as I'm thinking to go with Python API.
+3. **Part 3: Trying it out!** - Done
 
-3. **Part3: Trying it out!** (Not started yet)
+4. **Part 4: Deployment** - Done
 
-4. **Part4: Deployment**
-
-   - Mostly done and documented in the root README file with FE architecture and instructions on how to run and set up Docker Compose.
-   - Production-related webpack configuration is pending.
-
-5. **Part 5: General questions** (Not started yet)
+5. **Part 5: General Questions** - Added thought process at the end of this README.
 
 ## Architecture
 
 ### Backend
 
-- JSON API
-- Python API
+- **Starlette API with PostgreSQL and Python** (refer to `docker-compose.service.yml`)
+  1. **GET Method:**
+     - Endpoint: `http://localhost:9999/data`
+     - Initial data seed will be done using `init.sql` file.
+     - Returns data ordered by position.
+     - pgAdmin service added on port 5000.
+  2. **POST Method:**
+     - Endpoint: same as GET API.
+     - Takes the whole list as request parameters and updates in the database.
 
 ### Frontend
 
-- MicroFrontend using Module Federation
-- Docker for containerizing each individual app, running all apps in a single go using Docker Compose
+- **MicroFrontend using Module Federation**
+- **Docker** for containerizing each individual app and running all apps using Docker Compose.
 
 #### Components
 
@@ -45,7 +74,7 @@ Here is the status of all 5 points mentioned in the PDF:
 
 #### Host Apps (product-listing)
 
-- A standalone SPA React app that consumes MFE components exposed via Module Federation. Considered alternatives like NX workspace for monorepo benefits, but opted for Module Federation due to the project's size.
+- A standalone SPA React app that consumes MFE components exposed via Module Federation. Considered alternatives like NX workspace for monorepo benefits but opted for Module Federation due to the project's size.
 
 ### Docker Compose
 
@@ -65,7 +94,7 @@ Here is the status of all 5 points mentioned in the PDF:
 
 1. **Docker Compose**
 
-   - **Development Environment**:
+   - **Development Environment:**
 
      ```sh
      docker-compose up --build
@@ -73,7 +102,7 @@ Here is the status of all 5 points mentioned in the PDF:
 
      This command runs all the micro-frontend apps with the host app. Access them via `localhost:8082` and `localhost:8083`.
 
-   - **Production Environment**:
+   - **Production Environment:**
 
      ```sh
      docker-compose -f docker-compose.prod.yml up
@@ -93,4 +122,72 @@ Here is the status of all 5 points mentioned in the PDF:
      yarn start
      ```
 
-     **Note**: Ensure all remote apps consumed by the host app are up and running. Check the `webpack.config` Module Federation configuration for details on which apps need to be running.
+     **Note:** Ensure all remote apps consumed by the host app are up and running. Check the `webpack.config` Module Federation configuration for details on which apps need to be running.
+
+### Part 5: General Questions (Continue From Status of Key Points)
+
+We can develop the API in the following way:
+
+#### Endpoints and Methods
+
+1. **Standard REST API Way**
+
+   - **GET /elements** - Retrieves all elements.
+   - **GET /elements/{id}** - Retrieves a specific element.
+   - **POST /elements** - Creates a new element.
+   - **PUT /elements/{id}** - Updates an existing element.
+   - **DELETE /elements/{id}** - Removes an element.
+
+2. **Integrate GraphQL API Server** with services as well as with frontend for more modular and efficient API calls.
+
+   - Request only required attributes from the GraphQL schema.
+   - Strong caching mechanism for improved API performance.
+
+3. **Version Your API Endpoints** (`/v1/data`, `/v2/data`, etc.) to ensure backward compatibility.
+
+4. **Design API with Filtering and Pagination Support**.
+
+5. **Configure CI/CD Pipelines** to automate the deployment process.
+
+## Thought Process While Developing this Solution
+
+- Looking at problem statement I decided to go with MicroFrontend Architecture with module federation, actually i was confused with module federation and NX workspace monorepo micro-frontend framework with deployment support but at the end decided to go with module federation as project demands
+  - individual deployment support
+  - dynamic lazy loading of file which make bundle size smaller and make app rendering faster
+  - reduce performance bottleneck
+- **More Reasons for Selecting MicroFrontend Architecture:**
+  - Easier to containerize and deploy individual components or apps.
+  - Focus on inter-app communication and the best ways to achieve it.
+
+### Key Decisions
+
+1. **Frontend/Components Structure:**
+
+   - Each component is an individual React app (or any other framework) placed inside the `components` folder.
+   - All apps are inside `frontend/Application1`, `frontend/Application2`, etc., and exposed using Module Federation.
+
+2. **Build and Deployment:**
+
+   - Each app/component folder contains a Dockerfile for creating Docker images for development and production.
+   - Individual apps can run with Docker or npm scripts.
+
+3. **Technologies Used:**
+
+   - **Create React App (CRA)**
+   - **TypeScript** for type safety (only initial level of component props due to time constraints).
+   - **React Hooks** and custom hooks for API integration.
+   - **Modern React development principles** to ensure code modularity and adherence to SOLID/DRY principles.
+
+4. **Backend Services:**
+   - Basic CRUD API developed using Starlette with PostgreSQL.
+   - Integrated frontend with custom `useFetch` hook.
+   - Great learning experience with Python and Starlette!
+
+### Future Improvements
+
+As mostly focused on hight level things and configuration don't able to spend much time on following areas which i though i will work on it.
+
+- Write test cases and setup coverage.
+- SonarLint report and rules setup.
+- Full support of TypeScript.
+- Commit hooks setup.

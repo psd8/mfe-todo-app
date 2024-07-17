@@ -28,7 +28,8 @@ services:
       - WATCHPACK_POLLING=true # create-ui-app >= 5.x
       - FAST_REFRESH=false
       - WDS_SOCKET_PORT= 8082
-      - REACT_APP_API_URL=${REACT_APP_API_URL}
+    env_file:
+      - ./frontend/product-listing/.env
     volumes:
       - /product-listing/node_modules
       - ./frontend/product-listing:/product-listing

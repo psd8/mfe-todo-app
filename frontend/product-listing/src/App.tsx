@@ -5,13 +5,14 @@ import {
   Card,
   CardContent,
   CardMedia,
+  CircularProgress,
   Dialog,
   DialogContent,
   Grid,
   Skeleton,
   Typography,
 } from "@mui/material";
-import Data from "./data.json";
+// import Data from "./data.json";
 import useFetch from "./hooks";
 import { getRecords } from "./api/enpoints";
 import { AUTO_SAVE_TIMER } from "./constants/index";
@@ -80,43 +81,49 @@ function App() {
       <div className="App">
         <body>
           <main>
-            <AutoSaveComponent
-              data={collection}
-              url={getRecords}
-              autoSaveCheckTimer={AUTO_SAVE_TIMER}
-            />
-            <Grid
-              container
-              alignItems={"center"}
-              justifyContent={"center"}
-              spacing={2}
-            >
-              {!isLoading && (
-                <DndComponent
-                  WithSortableItemContainer={WithSortableItemContainer}
-                  items={collection ?? data}
-                  RenderListItem={RenderListItem}
-                  onDragEnd={(items) => {
-                    setCollection(items);
-                  }}
-                  onClick={handleClickOpen}
+            {isLoading ? (
+              <CircularProgress />
+            ) : (
+              <>
+                <AutoSaveComponent
+                  data={collection}
+                  url={getRecords}
+                  autoSaveCheckTimer={AUTO_SAVE_TIMER}
                 />
-              )}
-            </Grid>
-            <Dialog
-              open={!!imageUrl}
-              onClose={handleClose}
-              maxWidth="md"
-              fullWidth
-            >
-              <DialogContent>
-                <img
-                  src={imageUrl}
-                  alt={imageUrl}
-                  style={{ width: "100%", height: "auto" }}
-                />
-              </DialogContent>
-            </Dialog>
+                <Grid
+                  container
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  spacing={2}
+                >
+                  {!isLoading && (
+                    <DndComponent
+                      WithSortableItemContainer={WithSortableItemContainer}
+                      items={collection ?? data}
+                      RenderListItem={RenderListItem}
+                      onDragEnd={(items) => {
+                        setCollection(items);
+                      }}
+                      onClick={handleClickOpen}
+                    />
+                  )}
+                </Grid>
+                <Dialog
+                  open={!!imageUrl}
+                  onClose={handleClose}
+                  maxWidth="md"
+                  fullWidth
+                >
+                  <DialogContent>
+                    <img
+                      src={imageUrl}
+                      alt={imageUrl}
+                      style={{ width: "100%", height: "auto" }}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </>
+            )}
           </main>
         </body>
       </div>
