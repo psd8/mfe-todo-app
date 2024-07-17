@@ -73,8 +73,16 @@ const DndComponent = ({
       setItems((items) => {
         const oldIndex = items.findIndex((item) => item.position === active.id);
         const newIndex = items.findIndex((item) => item.position === over.id);
-        onDragEnd(arraySwap(items, oldIndex, newIndex));
-        return arraySwap(items, oldIndex, newIndex);
+        const newArray = arraySwap([...items], oldIndex, newIndex);
+        onDragEnd(
+          newArray.map((item, index) => {
+            if (item.position !== index + 1) {
+              item.position = index + 1;
+            }
+            return item;
+          })
+        );
+        return newArray;
       });
     }
   }
@@ -87,9 +95,9 @@ const DndComponent = ({
     >
       <SortableContext items={items} strategy={rectSwappingStrategy}>
         {items.map((item) => (
-          <WithSortableItemContainer key={item.id}>
+          <WithSortableItemContainer key={item.position}>
             <SortableItem
-              id={item.id}
+              id={item.position}
               item={item}
               onClick={onClick}
               RenderListItem={RenderListItem}

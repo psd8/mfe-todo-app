@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "sourceMap": true,
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -17,10 +16,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src",
-    "*.d.ts",
-    "webpack.config.dev.js",
-    "webpack.config.prod.js"
-  ]
+  "include": ["src", "typings/index.d.ts"]
 }

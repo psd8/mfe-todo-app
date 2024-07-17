@@ -8,21 +8,27 @@ import {
   Dialog,
   DialogContent,
   Grid,
-  IconButton,
   Skeleton,
   Typography,
 } from "@mui/material";
 import Data from "./data.json";
 import useFetch from "./hooks";
+import { getRecords } from "./api/enpoints";
+import { AUTO_SAVE_TIMER } from "./constants/index";
 
 const DndComponent = React.lazy(() => import("DndComponent/Grid"));
+const AutoSaveComponent = React.lazy(
+  () => import("AutoSaveComponent/AutoSave")
+);
 function App() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  const { data, isLoading } = useFetch("http://localhost:9999/data");
+  const { data, isLoading } = useFetch(getRecords);
   const handleImageLoad = () => {
     setImageLoaded(true);
   };
+
+  const [collection, setCollection] = useState<[] | null>(null);
 
   const handleClickOpen = (url: string) => {
     setImageUrl(url);
@@ -74,6 +80,11 @@ function App() {
       <div className="App">
         <body>
           <main>
+            <AutoSaveComponent
+              data={collection}
+              url={getRecords}
+              autoSaveCheckTimer={AUTO_SAVE_TIMER}
+            />
             <Grid
               container
               alignItems={"center"}
@@ -83,9 +94,11 @@ function App() {
               {!isLoading && (
                 <DndComponent
                   WithSortableItemContainer={WithSortableItemContainer}
-                  items={data}
+                  items={collection ?? data}
                   RenderListItem={RenderListItem}
-                  onDragEnd={(items) => console.log(items)}
+                  onDragEnd={(items) => {
+                    setCollection(items);
+                  }}
                   onClick={handleClickOpen}
                 />
               )}
@@ -97,7 +110,11 @@ function App() {
               fullWidth
             >
               <DialogContent>
-                <img src={imageUrl} style={{ width: "100%", height: "auto" }} />
+                <img
+                  src={imageUrl}
+                  alt={imageUrl}
+                  style={{ width: "100%", height: "auto" }}
+                />
               </DialogContent>
             </Dialog>
           </main>

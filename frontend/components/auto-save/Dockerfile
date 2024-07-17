@@ -1,8 +1,8 @@
 FROM node:20 as base
 
-WORKDIR /product-listing
+WORKDIR /autosave
 
-ENV PATH /product-listing/node_modules/.bin:$PATH
+ENV PATH /autosave/node_modules/.bin:$PATH
 
 # Install app dependencies
 COPY package.json ./
@@ -12,8 +12,9 @@ RUN yarn install
 # Bundle app source
 # add app
 COPY . ./
-COPY .env .env
+
+
 FROM base as development
 
-EXPOSE 8082 
+EXPOSE 8084 
 CMD [ "yarn", "start" ]

@@ -8,12 +8,10 @@ const packageJson = require(path.resolve(__dirname, "package.json"));
 module.exports = {
   mode: "development",
   devServer: {
+    port: 8084,
     hot: true,
-    host: "0.0.0.0", // Important for Docker
-    port: 8082,
-    historyApiFallback: true,
     headers: {
-      "Access-Control-Allow-Origin": "same-site",
+      "Access-Control-Allow-Origin": "*",
     },
   },
   resolve: {
@@ -52,21 +50,18 @@ module.exports = {
         },
       },
       {
-        test: /\.svg$/,
+        test: /\.(svg|ico|png|json)$/,
         use: "file-loader",
-      },
-      {
-        test: /\.json$/,
-        type: "json", // Built-in support, no need for 'json-loader'
       },
     ],
   },
 
   plugins: [
     new ModuleFederationPlugin({
-      name: "ProductListing",
-      remotes: {
-        DndComponent: "DndComponent@http://localhost:8083/remoteEntry.js",
+      name: "AutoSaveComponent",
+      filename: "remoteEntry.js",
+      exposes: {
+        "./AutoSave": "./src/AutoSave",
       },
       shared: {
         react: {

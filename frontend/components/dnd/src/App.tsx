@@ -18,13 +18,13 @@ function App() {
       <DndComponent
         WithSortableItemContainer={WithSortableItemContainer}
         items={[
-          { id: 1, name: "one" },
-          { id: 2, name: "two" },
-          { id: 3, name: "three" },
-          { id: 4, name: "four" },
-          { id: 5, name: "five" },
-          { id: 6, name: "six" },
-          { id: 7, name: "seven" },
+          { id: 1, name: "one", position: 1 },
+          { id: 2, name: "two", position: 2 },
+          { id: 3, name: "three", position: 3 },
+          { id: 4, name: "four", position: 4 },
+          { id: 5, name: "five", position: 5 },
+          { id: 6, name: "six", position: 6 },
+          { id: 7, name: "seven", position: 7 },
         ]}
         RenderListItem={RenderListItem}
         onDragEnd={(items) => console.log(items)}

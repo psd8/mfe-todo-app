@@ -1,4 +1,3 @@
-import { DragEndEvent } from "@dnd-kit/core";
 import { CSSProperties, ReactNode } from "react";
 
 export interface ICommonComponent {
@@ -6,7 +5,7 @@ export interface ICommonComponent {
   children?: ReactNode;
 }
 export interface IListItem {
-  id: number;
+  position: number;
   [key: string]: any;
 }
 export interface IDragNDropProps {

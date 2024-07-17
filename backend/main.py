@@ -1,10 +1,11 @@
 from starlette.applications import Starlette
 from starlette.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
+from starlette.requests import Request
 from databases import Database
 import sqlalchemy
 from sqlalchemy import Table, Column, Integer, String, MetaData
-import uvicorn
+import os
 
 metadata = MetaData()
 
@@ -34,7 +35,7 @@ async def homepage(request):
     return JSONResponse({"message": "Hello World!"})
 
 # Example database connection (adjust with your actual settings)
-DATABASE_URL = "postgresql://postgres:postgres@postgres:5432/oltp_db";
+DATABASE_URL = os.getenv('DATABASE_URL');
 database = Database(DATABASE_URL)
 engine = sqlalchemy.create_engine(DATABASE_URL);
 metadata.create_all(engine)
@@ -52,9 +53,26 @@ async def shutdown():
 async def homepage(request):
     return JSONResponse({"message": "Hello World!"})
 
-@app.route("/data")
+@app.route("/data", methods=["GET"])
 async def get_data(request):
-    query = documents.select()
+    query = documents.select().order_by(documents.c.position.asc())
     results = await database.fetch_all(query)
     print(results)
     return JSONResponse([dict(result) for result in results])
+
+
+@app.route("/data", methods=["POST"])
+async def save_data(request: Request):
+    collection = await request.json()
+    if isinstance(collection, list):
+        for data in collection:
+            query = documents.select().where(documents.c.id == data["id"] and documents.c.position != data["position"])
+            result = await database.fetch_one(query)
+            
+            if result:
+                update_query = documents.update().where(documents.c.id == data["id"]).values(position=data["position"])
+                await database.execute(update_query)
+        return JSONResponse({"message": "Data inserted successfully!"})
+    else:
+         return JSONResponse({"error": "Request body should be a JSON array"}, status_code=400)
+
