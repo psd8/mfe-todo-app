@@ -1,12 +1,11 @@
-Here's a beautified version of your `README.md` content with added clarity and structure:
-
----
-
-# Sticky Todo List With Re-arranging Feature
+# Gallery With Re-arranging Feature
 
 ## Running the Application
 
-You can run the whole app with microservices and frontend using Docker Compose.
+You can run the whole app with microservices and frontend using Docker Compose. [Here is live demo deployed using AWS EC2](http://54.91.174.235:8082)
+[DNDComponent](http://54.91.174.235:8083)
+[AutoSaveComponent](http://54.91.174.235:8084)
+[MicroService](http://54.91.174.235:9999/data)
 
 ### Development Environment
 
